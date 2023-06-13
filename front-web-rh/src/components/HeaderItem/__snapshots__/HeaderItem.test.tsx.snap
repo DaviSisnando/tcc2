@@ -1,0 +1,13 @@
+// Vitest Snapshot v1
+
+exports[`HeaderItem > should match with snapshot 1`] = `
+<div>
+  <div
+    class="sc-gsnTZi iMCTXM"
+  >
+    <button
+      class="sc-bczRLJ heoOng"
+    />
+  </div>
+</div>
+`;

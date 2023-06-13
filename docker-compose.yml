@@ -1,0 +1,34 @@
+version: '3'
+
+services:
+  face-recognition-service:
+    build: "./face-recognition-service/"
+    ports:
+      - "8000:8000"
+    expose:
+      - 8000
+    environment:
+      - USER_SERVICE_URL=http://user-service:8001
+  user-service:
+    build: "./user-service/"
+    ports:
+      - "8001:8001"
+    expose:
+      - 8001
+  front-rh:
+    build: "./front-web-rh/"
+    ports:
+      - "3001:3000"
+    expose:
+      - 3000
+    environment:
+      - VITE_USER_SERVICE_BASE_URL=http://localhost:8001
+  front-lab:
+    build: "./front-web-lab/"
+    ports:
+      - "3000:3000"
+    expose:
+      - 3000
+    environment:
+      - VITE_FACE_SERVICE_BASE_URL=http://localhost:8000
+      - VITE_USER_SERVICE_BASE_URL=http://localhost:8001

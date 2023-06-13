@@ -1,0 +1,45 @@
+name: Build
+on:
+  workflow_dispatch:
+    inputs:
+      git-ref:
+        description: Git Ref (Optional)
+        required: false
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    types: [opened, synchronize, reopened]
+defaults:
+  run:
+    working-directory: ./front-web-lab
+jobs:
+  sonarcloud:
+    name: Quality
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone Repository (Latest)
+        uses: actions/checkout@v3
+        if: github.event.inputs.git-ref == ''
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Clone Repository (Custom Ref)
+        uses: actions/checkout@v3
+        if: github.event.inputs.git-ref != ''
+        with:
+          ref: ${{ github.event.inputs.git-ref }}
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      # - name: Setup Node
+      #   uses: actions/setup-node@v3
+      #   with:
+      #     node-version: '16.13'
+      #     cache: 'npm'
+      #     cache-dependency-path: ./front-web-lab/package-lock.json
+      # - run: npm install
+      # - run: npm run coverage
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
